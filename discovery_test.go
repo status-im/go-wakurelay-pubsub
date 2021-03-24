@@ -295,7 +295,7 @@ func TestGossipSubDiscoveryAfterBootstrap(t *testing.T) {
 func waitUntilGossipsubMeshCount(ps *PubSub, topic string, count int) {
 	done := false
 	doneCh := make(chan bool, 1)
-	rt := ps.rt.(*GossipSubRouter)
+	rt := ps.rt.(*WakuRelaySubRouter)
 	for !done {
 		ps.eval <- func() {
 			doneCh <- len(rt.mesh[topic]) == count

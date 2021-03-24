@@ -7,7 +7,7 @@
 //
 // - NewFloodSub creates an instance that uses the floodsub routing algorithm.
 //
-// - NewGossipSub creates an instance that uses the gossipsub routing algorithm.
+// - NewWakuRelaySub creates an instance that uses the gossipsub routing algorithm.
 //
 // - NewRandomSub creates an instance that uses the randomsub routing algorithm.
 //

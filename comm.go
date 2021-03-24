@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 
-	pb "github.com/libp2p/go-libp2p-pubsub/pb"
+	pb "github.com/status-im/go-wakurelay-pubsub/pb"
 
 	"github.com/libp2p/go-msgio/protoio"
 

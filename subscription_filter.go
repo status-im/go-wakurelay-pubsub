@@ -4,7 +4,7 @@ import (
 	"errors"
 	"regexp"
 
-	pb "github.com/libp2p/go-libp2p-pubsub/pb"
+	pb "github.com/status-im/go-wakurelay-pubsub/pb"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 )

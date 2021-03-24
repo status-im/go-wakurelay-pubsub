@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	pb "github.com/libp2p/go-libp2p-pubsub/pb"
+	pb "github.com/status-im/go-wakurelay-pubsub/pb"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 )
@@ -48,9 +48,9 @@ func (t *Topic) SetScoreParams(p *TopicScoreParams) error {
 
 	result := make(chan error, 1)
 	update := func() {
-		gs, ok := t.p.rt.(*GossipSubRouter)
+		gs, ok := t.p.rt.(*WakuRelaySubRouter)
 		if !ok {
-			result <- fmt.Errorf("pubsub router is not gossipsub")
+			result <- fmt.Errorf("pubsub router is not wakurelaysub")
 			return
 		}
 

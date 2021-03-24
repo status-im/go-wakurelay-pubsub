@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	pb "github.com/libp2p/go-libp2p-pubsub/pb"
+	pb "github.com/status-im/go-wakurelay-pubsub/pb"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -25,7 +25,7 @@ import (
 )
 
 func getGossipsub(ctx context.Context, h host.Host, opts ...Option) *PubSub {
-	ps, err := NewGossipSub(ctx, h, opts...)
+	ps, err := NewWakuRelaySub(ctx, h, opts...)
 	if err != nil {
 		panic(err)
 	}
@@ -317,7 +317,7 @@ func TestGossipsubFanoutExpiry(t *testing.T) {
 	}
 
 	psubs[0].eval <- func() {
-		if len(psubs[0].rt.(*GossipSubRouter).fanout) == 0 {
+		if len(psubs[0].rt.(*WakuRelaySubRouter).fanout) == 0 {
 			t.Fatal("owner has no fanout")
 		}
 	}
@@ -326,7 +326,7 @@ func TestGossipsubFanoutExpiry(t *testing.T) {
 	time.Sleep(time.Second * 2)
 
 	psubs[0].eval <- func() {
-		if len(psubs[0].rt.(*GossipSubRouter).fanout) > 0 {
+		if len(psubs[0].rt.(*WakuRelaySubRouter).fanout) > 0 {
 			t.Fatal("fanout hasn't expired")
 		}
 	}
@@ -966,7 +966,7 @@ func TestGossipsubStarTopology(t *testing.T) {
 
 	// configure the center of the star with a very low D
 	psubs[0].eval <- func() {
-		gs := psubs[0].rt.(*GossipSubRouter)
+		gs := psubs[0].rt.(*WakuRelaySubRouter)
 		gs.D = 0
 		gs.Dlo = 0
 		gs.Dhi = 0
@@ -1050,7 +1050,7 @@ func TestGossipsubStarTopologyWithSignedPeerRecords(t *testing.T) {
 
 	// configure the center of the star with a very low D
 	psubs[0].eval <- func() {
-		gs := psubs[0].rt.(*GossipSubRouter)
+		gs := psubs[0].rt.(*WakuRelaySubRouter)
 		gs.D = 0
 		gs.Dlo = 0
 		gs.Dhi = 0
@@ -1223,7 +1223,7 @@ func TestGossipsubDirectPeersFanout(t *testing.T) {
 	// verify that h0 is in the fanout of h2, but not h1 who is a direct peer
 	result := make(chan bool, 2)
 	psubs[2].eval <- func() {
-		rt := psubs[2].rt.(*GossipSubRouter)
+		rt := psubs[2].rt.(*WakuRelaySubRouter)
 		fanout := rt.fanout["test"]
 		_, ok := fanout[h[0].ID()]
 		result <- ok
@@ -1250,7 +1250,7 @@ func TestGossipsubDirectPeersFanout(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	psubs[2].eval <- func() {
-		rt := psubs[2].rt.(*GossipSubRouter)
+		rt := psubs[2].rt.(*WakuRelaySubRouter)
 		mesh := rt.mesh["test"]
 		_, ok := mesh[h[0].ID()]
 		result <- ok
@@ -1501,7 +1501,7 @@ func TestGossipsubScoreValidatorEx(t *testing.T) {
 	// a negative score (its message got rejected)
 	res := make(chan float64, 1)
 	psubs[0].eval <- func() {
-		res <- psubs[0].rt.(*GossipSubRouter).score.Score(hosts[1].ID())
+		res <- psubs[0].rt.(*WakuRelaySubRouter).score.Score(hosts[1].ID())
 	}
 	score := <-res
 	if score != 0 {
@@ -1509,7 +1509,7 @@ func TestGossipsubScoreValidatorEx(t *testing.T) {
 	}
 
 	psubs[0].eval <- func() {
-		res <- psubs[0].rt.(*GossipSubRouter).score.Score(hosts[2].ID())
+		res <- psubs[0].rt.(*WakuRelaySubRouter).score.Score(hosts[2].ID())
 	}
 	score = <-res
 	if score >= 0 {
@@ -1530,7 +1530,7 @@ func TestGossipsubPiggybackControl(t *testing.T) {
 
 	res := make(chan *RPC, 1)
 	ps.eval <- func() {
-		gs := ps.rt.(*GossipSubRouter)
+		gs := ps.rt.(*WakuRelaySubRouter)
 		test1 := "test1"
 		test2 := "test2"
 		test3 := "test3"
@@ -1585,8 +1585,8 @@ func TestGossipsubMultipleGraftTopics(t *testing.T) {
 	secondPeer := hosts[1].ID()
 
 	p2Sub := psubs[1]
-	p1Router := psubs[0].rt.(*GossipSubRouter)
-	p2Router := psubs[1].rt.(*GossipSubRouter)
+	p1Router := psubs[0].rt.(*WakuRelaySubRouter)
+	p2Router := psubs[1].rt.(*WakuRelaySubRouter)
 
 	finChan := make(chan struct{})
 
@@ -1721,7 +1721,7 @@ func TestGossipsubOpportunisticGrafting(t *testing.T) {
 	res := make(chan int, 1)
 	for _, ps := range psubs {
 		ps.eval <- func() {
-			gs := ps.rt.(*GossipSubRouter)
+			gs := ps.rt.(*WakuRelaySubRouter)
 			count := 0
 			for _, h := range hosts[:10] {
 				_, ok := gs.mesh["test"][h.ID()]

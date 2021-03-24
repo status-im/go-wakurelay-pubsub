@@ -146,9 +146,9 @@ type TopicScoreSnapshot struct {
 // This option must be passed _after_ the WithPeerScore option.
 func WithPeerScoreInspect(inspect interface{}, period time.Duration) Option {
 	return func(ps *PubSub) error {
-		gs, ok := ps.rt.(*GossipSubRouter)
+		gs, ok := ps.rt.(*WakuRelaySubRouter)
 		if !ok {
-			return fmt.Errorf("pubsub router is not gossipsub")
+			return fmt.Errorf("pubsub router is not wakurelaysub")
 		}
 
 		if gs.score == nil {
@@ -232,7 +232,7 @@ func (ps *peerScore) SetTopicScoreParams(topic string, p *TopicScoreParams) erro
 }
 
 // router interface
-func (ps *peerScore) Start(gs *GossipSubRouter) {
+func (ps *peerScore) Start(gs *WakuRelaySubRouter) {
 	if ps == nil {
 		return
 	}

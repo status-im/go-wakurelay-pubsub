@@ -33,7 +33,7 @@ func newGossipTracer() *gossipTracer {
 	}
 }
 
-func (gt *gossipTracer) Start(gs *GossipSubRouter) {
+func (gt *gossipTracer) Start(gs *WakuRelaySubRouter) {
 	if gt == nil {
 		return
 	}

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	pb "github.com/libp2p/go-libp2p-pubsub/pb"
+	pb "github.com/status-im/go-wakurelay-pubsub/pb"
 )
 
 func TestMessageCache(t *testing.T) {

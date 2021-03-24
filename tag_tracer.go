@@ -69,7 +69,7 @@ func newTagTracer(cmgr connmgr.ConnManager) *tagTracer {
 	}
 }
 
-func (t *tagTracer) Start(gs *GossipSubRouter) {
+func (t *tagTracer) Start(gs *WakuRelaySubRouter) {
 	if t == nil {
 		return
 	}

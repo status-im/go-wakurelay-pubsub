@@ -107,12 +107,12 @@ If you want to trace using a remote peer, you can do so using the `traced` daemo
 
 For instance, to capture the trace as a json file, you can use the following option:
 ```go
-pubsub.NewGossipSub(..., pubsub.NewEventTracer(pubsub.NewJSONTracer("/path/to/trace.json")))
+pubsub.NewWakuRelaySub(..., pubsub.NewEventTracer(pubsub.NewJSONTracer("/path/to/trace.json")))
 ```
 
 To capture the trace as a protobuf, you can use the following option:
 ```go
-pubsub.NewGossipSub(..., pubsub.NewEventTracer(pubsub.NewPBTracer("/path/to/trace.pb")))
+pubsub.NewWakuRelaySub(..., pubsub.NewEventTracer(pubsub.NewPBTracer("/path/to/trace.pb")))
 ```
 
 Finally, to use the remote tracer, you can use the following incantations:
@@ -128,7 +128,7 @@ if err != nil {
   panic(err)
 }
 
-ps, err := pubsub.NewGossipSub(..., pubsub.WithEventTracer(tracer))
+ps, err := pubsub.NewWakuRelaySub(..., pubsub.WithEventTracer(tracer))
 ```
 
 ## Contribute

@@ -163,9 +163,9 @@ type peerGaterStats struct {
 // interval.
 func WithPeerGater(params *PeerGaterParams) Option {
 	return func(ps *PubSub) error {
-		gs, ok := ps.rt.(*GossipSubRouter)
+		gs, ok := ps.rt.(*WakuRelaySubRouter)
 		if !ok {
-			return fmt.Errorf("pubsub router is not gossipsub")
+			return fmt.Errorf("pubsub router is not wakurelaysub")
 		}
 
 		err := params.validate()

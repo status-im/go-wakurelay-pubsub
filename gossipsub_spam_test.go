@@ -13,7 +13,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 
-	pb "github.com/libp2p/go-libp2p-pubsub/pb"
+	pb "github.com/status-im/go-wakurelay-pubsub/pb"
 
 	logging "github.com/ipfs/go-log"
 	"github.com/libp2p/go-msgio/protoio"
@@ -31,7 +31,7 @@ func TestGossipsubAttackSpamIWANT(t *testing.T) {
 	attacker := hosts[1]
 
 	// Set up gossipsub on the legit host
-	ps, err := NewGossipSub(ctx, legit)
+	ps, err := NewWakuRelaySub(ctx, legit)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -148,7 +148,7 @@ func TestGossipsubAttackSpamIHAVE(t *testing.T) {
 	attacker := hosts[1]
 
 	// Set up gossipsub on the legit host
-	ps, err := NewGossipSub(ctx, legit,
+	ps, err := NewWakuRelaySub(ctx, legit,
 		WithPeerScore(
 			&PeerScoreParams{
 				AppSpecificScore:       func(peer.ID) float64 { return 0 },
@@ -222,7 +222,7 @@ func TestGossipsubAttackSpamIHAVE(t *testing.T) {
 					firstBatchCount := iwc
 
 					// the score should still be 0 because we haven't broken any promises yet
-					score := ps.rt.(*GossipSubRouter).score.Score(attacker.ID())
+					score := ps.rt.(*WakuRelaySubRouter).score.Score(attacker.ID())
 					if score != 0 {
 						t.Fatalf("Expected 0 score, but got %f", score)
 					}
@@ -250,7 +250,7 @@ func TestGossipsubAttackSpamIHAVE(t *testing.T) {
 					time.Sleep(GossipSubIWantFollowupTime)
 
 					// The score should now be negative because of broken promises
-					score = ps.rt.(*GossipSubRouter).score.Score(attacker.ID())
+					score = ps.rt.(*WakuRelaySubRouter).score.Score(attacker.ID())
 					if score >= 0 {
 						t.Fatalf("Expected negative score, but got %f", score)
 					}
@@ -281,7 +281,7 @@ func TestGossipsubAttackGRAFTNonExistentTopic(t *testing.T) {
 	attacker := hosts[1]
 
 	// Set up gossipsub on the legit host
-	ps, err := NewGossipSub(ctx, legit)
+	ps, err := NewWakuRelaySub(ctx, legit)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -365,7 +365,7 @@ func TestGossipsubAttackGRAFTDuringBackoff(t *testing.T) {
 	attacker := hosts[1]
 
 	// Set up gossipsub on the legit host
-	ps, err := NewGossipSub(ctx, legit,
+	ps, err := NewWakuRelaySub(ctx, legit,
 		WithPeerScore(
 			&PeerScoreParams{
 				AppSpecificScore:       func(peer.ID) float64 { return 0 },
@@ -461,7 +461,7 @@ func TestGossipsubAttackGRAFTDuringBackoff(t *testing.T) {
 						t.Fatalf("Expected %d PRUNE messages but got %d", 1, pc)
 					}
 
-					score1 := ps.rt.(*GossipSubRouter).score.Score(attacker.ID())
+					score1 := ps.rt.(*WakuRelaySubRouter).score.Score(attacker.ID())
 					if score1 >= 0 {
 						t.Fatalf("Expected negative score, but got %f", score1)
 					}
@@ -480,7 +480,7 @@ func TestGossipsubAttackGRAFTDuringBackoff(t *testing.T) {
 						t.Fatalf("Expected %d PRUNE messages but got %d", 2, pc)
 					}
 
-					score2 := ps.rt.(*GossipSubRouter).score.Score(attacker.ID())
+					score2 := ps.rt.(*WakuRelaySubRouter).score.Score(attacker.ID())
 					if score2 >= score1 {
 						t.Fatalf("Expected score below %f, but got %f", score1, score2)
 					}
@@ -497,7 +497,7 @@ func TestGossipsubAttackGRAFTDuringBackoff(t *testing.T) {
 						t.Fatalf("Expected %d PRUNE messages but got %d", 3, pc)
 					}
 
-					score3 := ps.rt.(*GossipSubRouter).score.Score(attacker.ID())
+					score3 := ps.rt.(*WakuRelaySubRouter).score.Score(attacker.ID())
 					if score3 >= score2 {
 						t.Fatalf("Expected score below %f, but got %f", score2, score3)
 					}
@@ -524,7 +524,7 @@ func TestGossipsubAttackGRAFTDuringBackoff(t *testing.T) {
 					// make sure we are _not_ in the mesh
 					res := make(chan bool)
 					ps.eval <- func() {
-						mesh := ps.rt.(*GossipSubRouter).mesh[mytopic]
+						mesh := ps.rt.(*WakuRelaySubRouter).mesh[mytopic]
 						_, inMesh := mesh[attacker.ID()]
 						res <- inMesh
 					}
@@ -609,7 +609,7 @@ func TestGossipsubAttackInvalidMessageSpam(t *testing.T) {
 
 	// Set up gossipsub on the legit host
 	tracer := &gsAttackInvalidMsgTracer{}
-	ps, err := NewGossipSub(ctx, legit,
+	ps, err := NewWakuRelaySub(ctx, legit,
 		WithEventTracer(tracer),
 		WithPeerScore(params, thresholds),
 	)
@@ -618,7 +618,7 @@ func TestGossipsubAttackInvalidMessageSpam(t *testing.T) {
 	}
 
 	attackerScore := func() float64 {
-		return ps.rt.(*GossipSubRouter).score.Score(attacker.ID())
+		return ps.rt.(*WakuRelaySubRouter).score.Score(attacker.ID())
 	}
 
 	// Subscribe to mytopic on the legit host
