@@ -232,7 +232,7 @@ func NewWakuRelaySub(ctx context.Context, h host.Host, opts ...Option) (*PubSub,
 // Allows setting a function for protocol id matching
 func NewWakuRelaySubWithMatcherFunc(ctx context.Context, h host.Host, match func(string) bool, opts ...Option) (*PubSub, error) {
 	rt := createWakuRelaySub(ctx, h, opts...)
-	return NewPubSub(ctx, h, rt, opts...)
+	return NewPubSubWithMatcherFunc(ctx, h, rt, match, opts...)
 }
 
 // WithPeerScore is a gossipsub router option that enables peer scoring.
