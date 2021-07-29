@@ -231,7 +231,7 @@ func NewWakuRelaySub(ctx context.Context, h host.Host, opts ...Option) (*PubSub,
 // It has the folowing options set as default: WithMessageSignaturePolicy(StrictNoSign),
 // WithNoAuthor, and WithMessageIdFn that hashes the message content
 // Allows setting a function for protocol id matching
-func NewWakuRelaySubWithMatcherFunc(ctx context.Context, h host.Host, match func(string) bool, opts ...Option) (*PubSub, error) {
+func NewWakuRelaySubWithMatcherFunc(ctx context.Context, h host.Host, match MatchFunction, opts ...Option) (*PubSub, error) {
 	rt := createWakuRelaySub(ctx, h)
 
 	// use the withInternalTracer option to hook up the tag tracer

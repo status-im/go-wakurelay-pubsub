@@ -311,8 +311,10 @@ func NewPubSub(ctx context.Context, h host.Host, rt PubSubRouter, opts ...Option
 	return ps, nil
 }
 
+type MatchFunction func(string) func(string) bool
+
 // NewPubSubWithMatcherFunc returns a new PubSub management object, using a matcher function for the protocol id
-func NewPubSubWithMatcherFunc(ctx context.Context, h host.Host, rt PubSubRouter, match func(string) bool, opts ...Option) (*PubSub, error) {
+func NewPubSubWithMatcherFunc(ctx context.Context, h host.Host, rt PubSubRouter, match MatchFunction, opts ...Option) (*PubSub, error) {
 	ps, err := createPubSub(ctx, h, rt, opts...)
 	if err != nil {
 		return nil, err
@@ -321,7 +323,7 @@ func NewPubSubWithMatcherFunc(ctx context.Context, h host.Host, rt PubSubRouter,
 	rt.Attach(ps)
 
 	for _, id := range rt.Protocols() {
-		h.SetStreamHandlerMatch(id, match, ps.handleNewStream)
+		h.SetStreamHandlerMatch(id, match(string(id)), ps.handleNewStream)
 	}
 	h.Network().Notify((*PubSubNotif)(ps))
 
